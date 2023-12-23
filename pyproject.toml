@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "pet-math-api"
+version = "0.1.0"
+description = "FastAPI REST api"
+authors = ["AlexeyGrushev <yablokov2004@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+fastapi = "^0.104.1"
+alembic = "^1.12.1"
+pydantic = "^2.5.0"
+pydantic-settings = "^2.0.3"
+asyncpg = "^0.29.0"
+uvicorn = "^0.24.0.post1"
+greenlet = "^3.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
