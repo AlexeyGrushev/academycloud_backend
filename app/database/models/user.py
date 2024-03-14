@@ -11,7 +11,8 @@ class User(Base):
         BigInteger,
         unique=True,
         primary_key=True,
-        nullable=False
+        nullable=False,
+        autoincrement=True
     )
     email: Mapped[str] = mapped_column(
         String(100),

@@ -10,7 +10,8 @@ class Profile(Base):
         BigInteger,
         unique=True,
         primary_key=True,
-        nullable=False
+        nullable=False,
+        autoincrement=True
     )
     user_data: Mapped[int] = mapped_column(
         BigInteger,

@@ -9,7 +9,8 @@ class Country(Base):
         BigInteger,
         unique=True,
         primary_key=True,
-        nullable=False
+        nullable=False,
+        autoincrement=True
     )
     country: Mapped[str] = mapped_column(
         VARCHAR(120),

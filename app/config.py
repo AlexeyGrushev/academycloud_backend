@@ -1,12 +1,10 @@
 from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
+from functools import lru_cache
+
 
 class Settings(BaseSettings):
-    some_attr: str
-
-
-class DBSettings(BaseSettings):
     DB_HOST: str
     DB_PORT: int
     DB_USER: str
@@ -27,4 +25,9 @@ class DBSettings(BaseSettings):
         extra = "ignore"
 
 
-db_settings = DBSettings()
+@lru_cache()
+def get_settings():
+    return Settings()
+
+
+db_settings = get_settings()

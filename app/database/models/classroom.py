@@ -10,7 +10,8 @@ class Classroom(Base):
         BigInteger,
         unique=True,
         primary_key=True,
-        nullable=False
+        nullable=False,
+        autoincrement=True
     )
     name: Mapped[str] = mapped_column(
         String(50)
