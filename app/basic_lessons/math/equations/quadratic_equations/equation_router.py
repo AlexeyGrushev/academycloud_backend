@@ -1,11 +1,12 @@
 from fastapi.routing import APIRouter
 
-from app.equations.quadratic_equations.get_equation import QuadraticEquations
-from app.equations.quadratic_equations.schemas import SEquation
+
+from app.basic_lessons.math.equations.quadratic_equations.get_equation import QuadraticEquations # noqa
+from app.basic_lessons.math.equations.quadratic_equations.schemas import SEquation # noqa
 
 
 router = APIRouter(
-    prefix="/v1/equations/quadratic",
+    prefix="/v1/math/equations/quadratic",
     tags=["Логика квадратных уравнений"]
 )
 

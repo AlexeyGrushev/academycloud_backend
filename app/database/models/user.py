@@ -1,8 +1,11 @@
-from datetime import date
+from datetime import datetime
 
-from app.database.settings import Base
+from sqlalchemy import func
+from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, BigInteger, VARCHAR, CHAR
+
+from app.database.settings import Base
 
 
 class User(Base):
@@ -20,9 +23,14 @@ class User(Base):
     )
     phone: Mapped[int] = mapped_column(
         BigInteger,
-        unique=True
+        unique=True,
+        nullable=True
     )
-    register_date: Mapped[date]
+    register_date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        default=func.now()
+    )
     login: Mapped[str] = mapped_column(
         VARCHAR(255),
         unique=True,

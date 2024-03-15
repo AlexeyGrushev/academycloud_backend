@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic import model_validator
 from pydantic_settings import BaseSettings
 
@@ -5,6 +6,12 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
+    # APP SETTINGS
+    APP_SECRET_KEY: str
+    APP_ALGORITHM: str
+    APP_ACCESS_EXPIRE_DAYS: int = Field(default=30)
+
+    # DB SETTINGS
     DB_HOST: str
     DB_PORT: int
     DB_USER: str
@@ -30,4 +37,4 @@ def get_settings():
     return Settings()
 
 
-db_settings = get_settings()
+settings = get_settings()
