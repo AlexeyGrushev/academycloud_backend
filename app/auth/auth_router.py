@@ -11,7 +11,7 @@ from app.users.dao import UserDAO
 
 
 router = APIRouter(
-    prefix="/v1/auth",
+    prefix="/auth",
     tags=["Аутентификация"]
 )
 
@@ -28,14 +28,6 @@ async def create_user(data: SRegisterUser):
         raise http_exc_400_bad_login
 
     hashed_password = create_hash_password(data.password)
-
-    print(
-        "🔴🔴🔴",
-        data.email,
-        data.phone_number,
-        data.login,
-        hashed_password
-    )
 
     user = await UserDAO.insert_new_user(
         email=data.email,

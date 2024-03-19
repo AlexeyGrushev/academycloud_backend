@@ -6,7 +6,7 @@ from app.basic_lessons.math.equations.quadratic_equations.schemas import SEquati
 
 
 router = APIRouter(
-    prefix="/v1/math/equations/quadratic",
+    prefix="/math/equations/quadratic",
     tags=["Логика квадратных уравнений"]
 )
 

@@ -5,6 +5,7 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 
 from app.config import settings
+from app.users.dao import UserDAO
 from app.exceptions.http_exceptions import http_exc_401_unauthorized
 
 
@@ -38,10 +39,25 @@ def decode_token(token: str) -> dict[str, Any]:
     try:
         decode_jwt = jwt.decode(
             token,
-            settings.SECRET_KEY,
-            settings.ALGORITHM,
+            settings.APP_SECRET_KEY,
+            settings.APP_ALGORITHM,
         )
         return decode_jwt
 
     except JWTError:
         raise http_exc_401_unauthorized
+
+
+async def authenticate_user(login_data: str, password: str):
+    user_email = await UserDAO.find_one_or_none(email=login_data)
+    user_login = await UserDAO.find_one_or_none(login=login_data)
+    user_phone = await UserDAO.find_one_or_none(phone=login_data)
+
+    if user_email:
+        ...
+    elif user_login:
+        ...
+    elif user_phone:
+        ...
+    else:
+        ...

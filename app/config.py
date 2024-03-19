@@ -7,9 +7,15 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # APP SETTINGS
+    APP_PREFIX: str
+    APP_HOST: str
+    APP_PORT: int
+    APP_LOG_LEVEL: str
     APP_SECRET_KEY: str
     APP_ALGORITHM: str
     APP_ACCESS_EXPIRE_DAYS: int = Field(default=30)
+    APP_BROKER_URL: str
+    APP_CACHE_URL: str
 
     # DB SETTINGS
     DB_HOST: str
