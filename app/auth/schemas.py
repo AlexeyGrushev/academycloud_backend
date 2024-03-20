@@ -1,10 +1,13 @@
-from typing import Optional
-from pydantic import EmailStr
+from pydantic import EmailStr, Field
 from pydantic import BaseModel
 
 
 class SRegisterUser(BaseModel):
     email: EmailStr
-    phone_number: Optional[int] = None
     login: str
-    password: str
+    password: str = Field(min_length=8)
+
+
+class SLoginUser(BaseModel):
+    login_data: str
+    password: str = Field(min_length=8)

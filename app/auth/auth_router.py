@@ -1,12 +1,17 @@
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRouter
 
-from app.auth.utils import create_hash_password
+from app.auth.utils import (
+    authenticate_user,
+    create_access_token,
+    create_hash_password
+)
 from app.exceptions.http_exceptions import (
     http_exc_400_bad_email,
-    http_exc_400_bad_login
+    http_exc_400_bad_login,
+    http_exc_401_unauthorized
 )
-from app.auth.schemas import SRegisterUser
+from app.auth.schemas import SLoginUser, SRegisterUser
 from app.users.dao import UserDAO
 
 
@@ -31,7 +36,6 @@ async def create_user(data: SRegisterUser):
 
     user = await UserDAO.insert_new_user(
         email=data.email,
-        phone=data.phone_number,
         login=data.login,
         hashed_password=hashed_password
     )
@@ -43,3 +47,18 @@ async def create_user(data: SRegisterUser):
         },
         status_code=200
     )
+
+
+@router.post("/login")
+async def login_user(data: SLoginUser):
+    user = await authenticate_user(
+        data.login_data,
+        data.password
+    )
+
+    if not user:
+        raise http_exc_401_unauthorized
+
+    access_token = create_access_token({"sub": user[0].id})
+
+    return access_token

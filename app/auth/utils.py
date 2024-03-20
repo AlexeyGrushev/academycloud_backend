@@ -49,15 +49,15 @@ def decode_token(token: str) -> dict[str, Any]:
 
 
 async def authenticate_user(login_data: str, password: str):
-    user_email = await UserDAO.find_one_or_none(email=login_data)
-    user_login = await UserDAO.find_one_or_none(login=login_data)
-    user_phone = await UserDAO.find_one_or_none(phone=login_data)
+    user = await UserDAO.find_one_or_none(email=login_data)
 
-    if user_email:
-        ...
-    elif user_login:
-        ...
-    elif user_phone:
-        ...
+    if user is None:
+        user = await UserDAO.find_one_or_none(login=login_data)
+
+    if user is None:
+        return None
+
+    if is_verify_password(password, str(user[0].hashed_password).strip()):
+        return user
     else:
-        ...
+        return None

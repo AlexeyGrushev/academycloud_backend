@@ -44,11 +44,11 @@
 #     return pwd_context.verify(plain_password, hashed_password)
 
 
-# print(create_hash_password("12345"))
+# # print(create_hash_password("12345"))
 
-print(
-    is_verify_password(
-        "123456",
-        "$2b$12$0qC1UtQt6znJt0./9L8pv.OyGlAbp.v3B8bCABWCXjAxG8xFKE0qi"
-    )
-)
+# print(
+#     is_verify_password(
+#         "12345678",
+#         "$2b$12$mtH2leUKFFflzgQIwDmqhufUOR.LQYiHm1QbNt1eAvNPSwUvtIdCm"
+#     )
+# )
