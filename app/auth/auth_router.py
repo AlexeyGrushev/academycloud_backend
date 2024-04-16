@@ -12,7 +12,7 @@ from app.exceptions.http_exceptions import (
     http_exc_401_unauthorized
 )
 from app.auth.schemas import SLoginUser, SRegisterUser
-from app.users.dao import UserDAO
+from app.users.user_dao import UserDAO
 
 
 router = APIRouter(
@@ -59,6 +59,6 @@ async def login_user(data: SLoginUser):
     if not user:
         raise http_exc_401_unauthorized
 
-    access_token = create_access_token({"sub": user[0].id})
+    access_token = create_access_token({"sub": str(user[0].id)})
 
     return access_token

@@ -5,7 +5,7 @@ from jose import jwt, JWTError
 from passlib.context import CryptContext
 
 from app.config import settings
-from app.users.dao import UserDAO
+from app.users.user_dao import UserDAO
 from app.exceptions.http_exceptions import http_exc_401_unauthorized
 
 

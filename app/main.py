@@ -14,6 +14,7 @@ from app.basic_lessons.math.equations.quadratic_equations import (
     equation_router
 )
 from app.auth import auth_router
+from app.users import users_router
 
 
 @asynccontextmanager
@@ -31,7 +32,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="API для AcademyCloud",
-    version="Alpha 1.5",
+    version="Alpha 1.7",
     lifespan=lifespan,
 )
 
@@ -46,6 +47,7 @@ app.add_middleware(
 
 
 app.include_router(auth_router.router, prefix=settings.APP_PREFIX)
+app.include_router(users_router.router, prefix=settings.APP_PREFIX)
 app.include_router(equation_router.router, prefix=settings.APP_PREFIX)
 
 # TODO

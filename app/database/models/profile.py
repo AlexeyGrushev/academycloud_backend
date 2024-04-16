@@ -23,14 +23,10 @@ class Profile(Base):
     last_name: Mapped[str] = mapped_column(
         String(50),
     )
-    sur_name: Mapped[str] = mapped_column(
-        String(50)
+    profile_picture: Mapped[str] = mapped_column(
+        nullable=True
     )
-    country_id: Mapped[int] = mapped_column(
-        BigInteger,
-        ForeignKey("country.id")
-    )
-    profile_picture: Mapped[str]
     status: Mapped[str] = mapped_column(
-        String(200)
+        String(200),
+        nullable=True
     )
