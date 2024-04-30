@@ -161,3 +161,10 @@ cython_debug/
 #.idea/
 *.DS_Store
 .vscode
+
+app/static/images/*
+app/static/files/*
+
+!app/static/files/const
+!app/static/images/profile_pic_default.jpeg
+!app/static/images/logo.png

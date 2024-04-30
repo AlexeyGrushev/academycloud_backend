@@ -5,7 +5,6 @@ from pydantic import BaseModel
 class SProfile(BaseModel):
     first_name: str
     last_name: str
-    profile_picture: str | None
     status: str | None
 
 
@@ -14,8 +13,9 @@ class SUserProfile(BaseModel):
     email: str
     register_date: datetime
     login: str
+    role: int
+    is_verified: bool
 
     first_name: str | None
     last_name: str | None
-    profile_picture: str | None
     status: str | None

@@ -1,4 +1,4 @@
-from app.database.settings import Base
+from app.config.db_settings import Base
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, BigInteger, ForeignKey
 
@@ -22,9 +22,6 @@ class Profile(Base):
     )
     last_name: Mapped[str] = mapped_column(
         String(50),
-    )
-    profile_picture: Mapped[str] = mapped_column(
-        nullable=True
     )
     status: Mapped[str] = mapped_column(
         String(200),

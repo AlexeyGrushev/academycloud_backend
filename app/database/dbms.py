@@ -1,5 +1,6 @@
-from app.database.settings import async_session
+from app.config.db_settings import async_session
 from sqlalchemy import (
+    delete,
     select,
     insert,
     text,
@@ -15,7 +16,7 @@ class DataBaseHelper:
     @classmethod
     async def find_all(cls):
         async with async_session() as session:
-            query = select("User")
+            query = select(cls.model)
             result = await session.execute(query)
             return result.fetchall()
 
@@ -37,9 +38,10 @@ class DataBaseHelper:
     @classmethod
     async def insert_values(cls, *args, **kwargs):
         async with async_session() as session:
-            query = insert(cls.model).values(**kwargs)
-            await session.execute(query)
+            query = insert(cls.model).values(**kwargs).returning(cls.model.id)
+            result = await session.execute(query)
             await session.commit()
+            return result.scalar_one()
 
     @classmethod
     async def get_seq(cls, *args, **kwargs) -> int:
@@ -49,3 +51,10 @@ class DataBaseHelper:
                 text(f"select last_value from {seq}")
             result = await session.execute(query)
             return result.fetchone()[0]
+
+    @classmethod
+    async def delete_values(cls, *args, **kwargs):
+        async with async_session() as session:
+            query = delete(cls.model).filter_by(**kwargs)
+            await session.execute(query)
+            await session.commit()

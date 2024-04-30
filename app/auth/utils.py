@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 
-from app.config import settings
+from app.config.app_settings import settings
 from app.users.user_dao import UserDAO
 from app.exceptions.http_exceptions import http_exc_401_unauthorized
 
@@ -20,10 +20,10 @@ def is_verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_access_token(data: dict) -> str:
+def create_access_token(data: dict, exp_days: float) -> str:
     to_encode = data.copy()
     expire = datetime.now(timezone.utc) + \
-        timedelta(days=settings.APP_ACCESS_EXPIRE_DAYS)
+        timedelta(days=exp_days)
     to_encode.update(
         {"exp": expire}
     )

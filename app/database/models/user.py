@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, func
+from sqlalchemy import Boolean, ForeignKey, func
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import String, BigInteger, VARCHAR, CHAR
 
-from app.database.settings import Base
+from app.config.db_settings import Base
 
 
 class User(Base):
@@ -27,6 +27,11 @@ class User(Base):
     )
     hashed_password: Mapped[str] = mapped_column(
         CHAR(255)
+    )
+    role: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("role.id"),
+        default=1
     )
     is_verified: Mapped[bool] = mapped_column(
         Boolean,

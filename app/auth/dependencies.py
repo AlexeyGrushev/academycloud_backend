@@ -3,7 +3,7 @@ from jose import jwt, JWTError
 from datetime import datetime, timezone
 
 from app.exceptions.http_exceptions import http_exc_401_unauthorized
-from app.config import settings
+from app.config.app_settings import settings
 from app.users.user_dao import UserDAO
 
 
@@ -25,7 +25,6 @@ async def get_current_user(token: str = Depends(get_token)):
         raise http_exc_401_unauthorized
 
     expire: str = payload.get("exp")
-    print(expire)
     if (not expire) or (int(expire) < datetime.now(timezone.utc).timestamp()):
         raise http_exc_401_unauthorized
 

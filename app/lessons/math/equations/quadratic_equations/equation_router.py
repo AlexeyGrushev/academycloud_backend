@@ -1,8 +1,8 @@
 from fastapi.routing import APIRouter
 
 
-from app.basic_lessons.math.equations.quadratic_equations.get_equation import QuadraticEquations # noqa
-from app.basic_lessons.math.equations.quadratic_equations.schemas import SEquation # noqa
+from app.lessons.math.equations.quadratic_equations.get_equation import QuadraticEquations # noqa
+from app.lessons.math.equations.quadratic_equations.schemas import SEquation # noqa
 
 
 router = APIRouter(

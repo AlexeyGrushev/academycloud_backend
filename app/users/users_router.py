@@ -1,11 +1,17 @@
 from fastapi import Depends
 from fastapi.routing import APIRouter
+from fastapi_cache.decorator import cache
 
+
+from app.base.email_utils import create_url_for_confirm
 from app.auth.dependencies import get_current_user
 from app.users.profile_dao import ProfileDAO
 from app.users.schemas import SProfile, SUserProfile
-from app.users.user_dao import UserDAO
 from app.database.models.user import User
+from app.tasks.tasks import send_user_email
+from app.exceptions.http_exceptions import (
+    http_exc_400_email_confirm
+)
 
 
 router = APIRouter(
@@ -15,6 +21,7 @@ router = APIRouter(
 
 
 @router.get("/get_user_info")
+@cache(expire=45)
 async def get_user_info(user: User = Depends(get_current_user)):
     profile = await ProfileDAO.find_one_or_none(user_data=user[0].id)
     if not profile:
@@ -23,9 +30,10 @@ async def get_user_info(user: User = Depends(get_current_user)):
             email=user[0].email,
             register_date=user[0].register_date,
             login=user[0].login,
+            role=user[0].role,
+            is_verified=user[0].is_verified,
             first_name=None,
             last_name=None,
-            profile_picture=None,
             status=None
         )
     else:
@@ -34,9 +42,10 @@ async def get_user_info(user: User = Depends(get_current_user)):
             email=user[0].email,
             register_date=user[0].register_date,
             login=user[0].login,
+            role=user[0].role,
+            is_verified=user[0].is_verified,
             first_name=profile[0].first_name,
             last_name=profile[0].last_name,
-            profile_picture=profile[0].profile_picture,
             status=profile[0].status
         )
 
@@ -53,7 +62,31 @@ async def update_profile(
             user_data=user[0].id,
             first_name=data.first_name,
             last_name=data.last_name,
-            profile_picture=data.profile_picture,
             status=data.status
         )
         return f"id {user[0].id} profile created successfuly"
+    else:
+        answer = await ProfileDAO.update_user_profile(
+            user_id=user[0].id,
+            first_name=data.first_name,
+            last_name=data.last_name,
+            status=data.status
+        )
+        return f"id {answer} profile updated successfuly"
+
+
+@router.get("/send_confirm_email")
+async def send_confirm_email(user: User = Depends(get_current_user)):
+    if user[0].is_verified:
+        raise http_exc_400_email_confirm
+
+    profile = await ProfileDAO.find_one_or_none(user_data=user[0].id)
+
+    send_user_email.delay(
+        user_email=user[0].email,
+        template_name="email_confirm.html",
+        user_name=profile[0].first_name,
+        url_for_confirm=create_url_for_confirm(
+            str(user[0].id)
+            )
+    )

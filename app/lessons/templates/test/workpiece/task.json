@@ -1,0 +1,24 @@
+{
+    "type": "test",
+    "name": "Название задания",
+    "reward": 40,
+    "body": {
+        "questions": [
+            {
+                "question": "Question text?",
+                "options": ["Answer1", "Answer2", "Answer3", "Answer4"],
+                "answer": "Answer3"
+            },
+            {
+                "question": "Question text 2?",
+                "options": ["Answer1", "Answer2", "Answer3", "Answer4"],
+                "answer": "Answer1"
+            },
+            {
+                "question": "Question text 3?",
+                "options": ["Answer1", "Answer2", "Answer3", "Answer4"],
+                "answer": "Answer4"
+            }
+        ]
+    }
+}

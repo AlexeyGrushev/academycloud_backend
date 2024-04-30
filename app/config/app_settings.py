@@ -16,6 +16,14 @@ class Settings(BaseSettings):
     APP_ACCESS_EXPIRE_DAYS: int = Field(default=30)
     APP_BROKER_URL: str
     APP_CACHE_URL: str
+    APP_SUBJECT: str = Field(default="Academy Cloud")
+
+    # SMTP Server
+    SMTP_SERVER: str = Field(default="smtp.example.com")
+    SMTP_PORT: int = Field(default=465)
+    SMTP_LOGIN: str = Field(default="example@example.com")
+    SMTP_PASSWORD: str = Field(default="example")
+    SMTP_TOKEN_EXPIRE_DAYS: float = Field(default=0.5)
 
     # DB SETTINGS
     DB_HOST: str

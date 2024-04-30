@@ -1,5 +1,5 @@
 from sqlalchemy import VARCHAR, BigInteger, ForeignKey
-from app.database.settings import Base
+from app.config.db_settings import Base
 from sqlalchemy.orm import Mapped, mapped_column
 
 
