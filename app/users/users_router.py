@@ -4,16 +4,18 @@ from fastapi_cache.decorator import cache
 
 
 from app.base.email_utils import create_url_for_confirm
-from app.auth.dependencies import get_current_user
+from app.auth.dependencies import get_current_manager, get_current_user
 from app.files.file_dao import FileDAO
 from app.lessons.manage.stats_dao import StatsDAO
 from app.users.profile_dao import ProfileDAO
-from app.users.schemas import SProfile, SUserProfile
+from app.users.schemas import SProfile, SUserActivationManager, SUserProfile
 from app.database.models.user import User
 from app.tasks.tasks import send_user_email
 from app.exceptions.http_exceptions import (
-    http_exc_400_email_confirm
+    http_exc_400_email_confirm,
+    http_exc_400_bad_data
 )
+from app.users.user_dao import UserDAO
 
 
 router = APIRouter(
@@ -110,3 +112,23 @@ async def send_confirm_email(user: User = Depends(get_current_user)):
             str(user[0].id)
         )
     )
+
+
+@router.put("/manager_set_user_active")
+async def manager_set_user_active(
+    data: SUserActivationManager,
+    manager: User = Depends(get_current_manager)
+):
+    user = await UserDAO.find_one_or_none(id=data.id)
+    if not user:
+        raise http_exc_400_bad_data
+
+    result = await UserDAO.update_user(
+        user_id=data.id,
+        is_active=data.is_active)
+
+    return {
+        "status": "success",
+        "id": result,
+        "is_active": data.is_active
+    }

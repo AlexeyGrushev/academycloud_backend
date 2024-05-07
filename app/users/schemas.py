@@ -21,3 +21,8 @@ class SUserProfile(BaseModel):
     profile_pic: str | None
     points: int | None
     status: str | None
+
+
+class SUserActivationManager(BaseModel):
+    id: int
+    is_active: bool

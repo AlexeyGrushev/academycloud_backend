@@ -7,6 +7,12 @@ http_exc_401_unauthorized = HTTPException(
     headers={"WWW-Authenticate": "Bearer"},
 )
 
+http_exc_401_banned_user = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Current user is deactivated",
+    headers={"WWW-Authenticate": "Bearer"},
+)
+
 http_exc_400_bad_email = HTTPException(
     status_code=status.HTTP_400_BAD_REQUEST,
     detail="This email is already occupied. Try to use another one.",
@@ -41,12 +47,6 @@ http_exc_400_email_confirm = HTTPException(
 http_exc_403_access_denied = HTTPException(
     status_code=status.HTTP_403_FORBIDDEN,
     detail="You don't have permission for this action"
-)
-
-http_exc_400_bad_data = HTTPException(
-    status_code=status.HTTP_400_BAD_REQUEST,
-    detail="The user is not found,"
-    " check the correctness of the email and password",
 )
 
 http_400_bad_item = HTTPException(

@@ -14,7 +14,8 @@ from app.config.app_settings import settings
 from app.exceptions.http_exceptions import (
     http_exc_400_bad_email,
     http_exc_400_bad_login,
-    http_exc_401_unauthorized
+    http_exc_401_unauthorized,
+    http_exc_401_banned_user
 )
 from app.auth.schemas import SLoginUser, SRegisterUser
 from app.users.user_dao import UserDAO
@@ -63,6 +64,9 @@ async def login_user(data: SLoginUser):
 
     if not user:
         raise http_exc_401_unauthorized
+
+    if user[0].is_active is False:
+        raise http_exc_401_banned_user
 
     access_token = create_access_token(
         {"sub": str(user[0].id)},

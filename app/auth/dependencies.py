@@ -5,7 +5,8 @@ from datetime import datetime, timezone
 from app.database.models.user import User
 from app.exceptions.http_exceptions import (
     http_exc_401_unauthorized,
-    http_exc_403_access_denied
+    http_exc_403_access_denied,
+    http_exc_401_banned_user
 )
 from app.config.app_settings import settings
 from app.users.user_dao import UserDAO
@@ -39,6 +40,9 @@ async def get_current_user(token: str = Depends(get_token)):
     user = await UserDAO.find_one_or_none(id=int(user_id))
     if not user:
         raise http_exc_401_unauthorized
+
+    if user[0].is_active is False:
+        raise http_exc_401_banned_user
 
     return user
 
