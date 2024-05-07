@@ -113,6 +113,10 @@ async def send_confirm_email(user: User = Depends(get_current_user)):
         )
     )
 
+    return {
+        "status": "success, task added"
+    }
+
 
 @router.put("/manager_set_user_active")
 async def manager_set_user_active(
