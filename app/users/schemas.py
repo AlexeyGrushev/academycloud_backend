@@ -18,4 +18,6 @@ class SUserProfile(BaseModel):
 
     first_name: str | None
     last_name: str | None
+    profile_pic: str | None
+    points: int | None
     status: str | None

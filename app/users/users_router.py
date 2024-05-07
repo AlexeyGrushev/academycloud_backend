@@ -5,6 +5,8 @@ from fastapi_cache.decorator import cache
 
 from app.base.email_utils import create_url_for_confirm
 from app.auth.dependencies import get_current_user
+from app.files.file_dao import FileDAO
+from app.lessons.manage.stats_dao import StatsDAO
 from app.users.profile_dao import ProfileDAO
 from app.users.schemas import SProfile, SUserProfile
 from app.database.models.user import User
@@ -34,9 +36,25 @@ async def get_user_info(user: User = Depends(get_current_user)):
             is_verified=user[0].is_verified,
             first_name=None,
             last_name=None,
+            profile_pic=None,
+            points=0,
             status=None
         )
     else:
+        profile_pic = await FileDAO.find_one_or_none(
+            user_id=user[0].id,
+            file_type=1
+        )
+        if profile_pic is not None:
+            profile_pic = profile_pic[0].file_name
+
+        points = await StatsDAO.get_field_sum(
+            StatsDAO.model.earned_points,
+            user_id=user[0].id)
+
+        if points is None:
+            points = 0
+
         return SUserProfile(
             id=user[0].id,
             email=user[0].email,
@@ -46,6 +64,8 @@ async def get_user_info(user: User = Depends(get_current_user)):
             is_verified=user[0].is_verified,
             first_name=profile[0].first_name,
             last_name=profile[0].last_name,
+            profile_pic=profile_pic,
+            points=points,
             status=profile[0].status
         )
 
@@ -88,5 +108,5 @@ async def send_confirm_email(user: User = Depends(get_current_user)):
         user_name=profile[0].first_name,
         url_for_confirm=create_url_for_confirm(
             str(user[0].id)
-            )
+        )
     )

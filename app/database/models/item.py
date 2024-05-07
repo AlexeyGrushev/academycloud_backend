@@ -1,11 +1,11 @@
-from app.config.db_settings import Base
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, BigInteger
+from sqlalchemy import BigInteger, VARCHAR
+
+from app.config.db_settings import Base
 
 
-class Role(Base):
-    __tablename__ = "role"
-
+class Item(Base):
+    __tablename__ = "item"
     id: Mapped[int] = mapped_column(
         BigInteger,
         unique=True,
@@ -14,6 +14,6 @@ class Role(Base):
         autoincrement=True
     )
     name: Mapped[str] = mapped_column(
-        String(100),
+        VARCHAR(255),
         unique=True
     )

@@ -15,5 +15,6 @@ class FileType(Base):
     )
     type: Mapped[str] = mapped_column(
         VARCHAR(100),
-        nullable=False
+        nullable=False,
+        unique=True
     )

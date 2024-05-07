@@ -1,11 +1,8 @@
 import json
 
+s = "[1, 2, 3]"
+list_s = json.loads(s)
 
-with open('app/lessons/templates/test/workpiece/task.json', "r") as f:
-    templates = json.load(f)
-
-print(templates)
-
-# for section, commands in templates.items():
-#     print(section)
-#     print('\n'.join(commands))
+print(type(s))
+print(list_s)  # Вывод: [1, 2, 3]
+print(type(list_s))  # Вывод: [1, 2, 3]

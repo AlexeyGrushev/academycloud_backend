@@ -2,7 +2,11 @@ from fastapi import Depends, Request
 from jose import jwt, JWTError
 from datetime import datetime, timezone
 
-from app.exceptions.http_exceptions import http_exc_401_unauthorized
+from app.database.models.user import User
+from app.exceptions.http_exceptions import (
+    http_exc_401_unauthorized,
+    http_exc_403_access_denied
+)
 from app.config.app_settings import settings
 from app.users.user_dao import UserDAO
 
@@ -37,3 +41,19 @@ async def get_current_user(token: str = Depends(get_token)):
         raise http_exc_401_unauthorized
 
     return user
+
+
+async def get_current_superuser(user: User = Depends(get_current_user)):
+    if user[0].role == settings.APP_SUPERUSER_ROLE_ID:
+        return user
+    else:
+        raise http_exc_403_access_denied
+
+
+async def get_current_manager(user: User = Depends(get_current_user)):
+    if user[0].role == settings.APP_SUPERUSER_ROLE_ID:
+        return user
+    elif user[0].role == settings.APP_MANAGER_ROLE_ID:
+        return user
+    else:
+        raise http_exc_403_access_denied

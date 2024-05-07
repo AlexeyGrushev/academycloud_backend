@@ -16,6 +16,7 @@ from app.lessons.math.equations.quadratic_equations import (
 from app.auth import auth_router
 from app.users import users_router
 from app.files import files_router
+from app.lessons.manage import manage_lesson_router
 
 
 @asynccontextmanager
@@ -33,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="AcademyCloud Управление",
-    version="Alpha 2.0",
+    version="Beta 1.0",
     lifespan=lifespan,
 )
 
@@ -54,6 +55,7 @@ app.mount("/file", StaticFiles(directory="app/static/files"), name="files")
 app.include_router(auth_router.router, prefix=settings.APP_PREFIX)
 app.include_router(users_router.router, prefix=settings.APP_PREFIX)
 app.include_router(files_router.router, prefix=settings.APP_PREFIX)
+app.include_router(manage_lesson_router.router, prefix=settings.APP_PREFIX)
 app.include_router(equation_router.router, prefix=settings.APP_PREFIX)
 
 

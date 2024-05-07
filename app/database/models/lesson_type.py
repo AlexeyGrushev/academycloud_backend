@@ -1,10 +1,11 @@
-from sqlalchemy import VARCHAR, BigInteger
-from app.config.db_settings import Base
 from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import BigInteger, VARCHAR
+
+from app.config.db_settings import Base
 
 
-class Part_of_speech(Base):
-    __tablename__ = "part_of_speech"
+class LessonType(Base):
+    __tablename__ = "lesson_type"
     id: Mapped[int] = mapped_column(
         BigInteger,
         unique=True,
@@ -12,8 +13,7 @@ class Part_of_speech(Base):
         nullable=False,
         autoincrement=True
     )
-    part: Mapped[str] = mapped_column(
-        VARCHAR(50),
-        nullable=False,
+    type: Mapped[str] = mapped_column(
+        VARCHAR(255),
         unique=True
     )

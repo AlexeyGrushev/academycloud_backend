@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     APP_BROKER_URL: str
     APP_CACHE_URL: str
     APP_SUBJECT: str = Field(default="Academy Cloud")
+    APP_SUPERUSER_ROLE_ID: int = Field(default=2)
+    APP_MANAGER_ROLE_ID: int = Field(default=3)
 
     # SMTP Server
     SMTP_SERVER: str = Field(default="smtp.example.com")
