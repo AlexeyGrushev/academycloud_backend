@@ -33,6 +33,10 @@ class User(Base):
         ForeignKey("role.id"),
         default=1
     )
+    is_active: Mapped[bool] = mapped_column(
+        Boolean,
+        default=True
+    )
     is_verified: Mapped[bool] = mapped_column(
         Boolean,
         default=False
