@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 
 
 class SProfile(BaseModel):
@@ -26,3 +26,13 @@ class SUserProfile(BaseModel):
 class SUserActivationManager(BaseModel):
     id: int
     is_active: bool
+
+
+class SUserLoginData(BaseModel):
+    login_data: str
+
+
+class SUserUpdate(BaseModel):
+    email: EmailStr | None
+    login: str | None
+    password: str | None = Field(min_length=8)

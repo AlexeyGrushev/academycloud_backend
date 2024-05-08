@@ -3,19 +3,27 @@ from fastapi.routing import APIRouter
 from fastapi_cache.decorator import cache
 
 
-from app.base.email_utils import create_url_for_confirm
+from app.base.email_utils import create_url_for_confirm, create_url_for_restore
 from app.auth.dependencies import get_current_manager, get_current_user
 from app.files.file_dao import FileDAO
 from app.lessons.manage.stats_dao import StatsDAO
 from app.users.profile_dao import ProfileDAO
-from app.users.schemas import SProfile, SUserActivationManager, SUserProfile
+from app.users.schemas import (
+    SProfile,
+    SUserActivationManager,
+    SUserLoginData,
+    SUserProfile,
+    SUserUpdate
+)
 from app.database.models.user import User
 from app.tasks.tasks import send_user_email
 from app.exceptions.http_exceptions import (
     http_exc_400_email_confirm,
-    http_exc_400_bad_data
+    http_exc_400_bad_data,
+    http_exc_403_access_denied
 )
 from app.users.user_dao import UserDAO
+from app.users.utils import update_user
 
 
 router = APIRouter(
@@ -72,7 +80,19 @@ async def get_user_info(user: User = Depends(get_current_user)):
         )
 
 
-@router.post("/update_profile")
+@router.put("/update_user")
+async def update_user_endpoint(
+    data: SUserUpdate,
+    user: User = Depends(get_current_user)
+):
+    result = await update_user(
+        user_id=user[0].id,
+        data=data
+    )
+    return result
+
+
+@router.put("/update_profile")
 async def update_profile(
         data: SProfile,
         user: User = Depends(get_current_user)):
@@ -109,6 +129,35 @@ async def send_confirm_email(user: User = Depends(get_current_user)):
         template_name="email_confirm.html",
         user_name=profile[0].first_name,
         url_for_confirm=create_url_for_confirm(
+            str(user[0].id)
+        )
+    )
+
+    return {
+        "status": "success, task added"
+    }
+
+
+@router.post("/send_restore_email")
+async def send_restore_email(data: SUserLoginData):
+    user = await UserDAO.find_one_or_none(login=data.login_data)
+
+    if not user:
+        user = await UserDAO.find_one_or_none(email=data.login_data)
+
+    if not user:
+        raise http_exc_403_access_denied
+
+    if not user[0].is_verified:
+        raise http_exc_403_access_denied
+
+    profile = await ProfileDAO.find_one_or_none(user_data=user[0].id)
+
+    send_user_email.delay(
+        user_email=user[0].email,
+        template_name="email_restore_password.html",
+        user_name=profile[0].first_name,
+        url_for_confirm=create_url_for_restore(
             str(user[0].id)
         )
     )

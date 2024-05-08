@@ -9,8 +9,16 @@ from app.config.app_settings import settings
 def create_url_for_confirm(user_id: str):
     token = create_access_token(
         {"sub": user_id}, settings.SMTP_TOKEN_EXPIRE_DAYS)
-    url = f"http://{settings.APP_HOST}{
+    url = f"{settings.APP_BASE_URL}{
         settings.APP_PREFIX}/auth/confirm_email/{token}"
+    return url
+
+
+def create_url_for_restore(user_id: str):
+    token = create_access_token(
+        {"sub": user_id}, settings.SMTP_TOKEN_EXPIRE_DAYS)
+    url = f"{settings.APP_BASE_URL}{
+        settings.APP_PREFIX}/auth/restore_password/{token}"
     return url
 
 

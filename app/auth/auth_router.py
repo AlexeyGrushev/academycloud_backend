@@ -9,6 +9,7 @@ from app.auth.utils import (
     create_access_token,
     create_hash_password,
 )
+from app.base.generate_random_password import generate_password
 from app.base.templates import render_template
 from app.config.app_settings import settings
 from app.exceptions.http_exceptions import (
@@ -18,7 +19,9 @@ from app.exceptions.http_exceptions import (
     http_exc_401_banned_user
 )
 from app.auth.schemas import SLoginUser, SRegisterUser
+from app.users.schemas import SUserUpdate
 from app.users.user_dao import UserDAO
+from app.users.utils import update_user
 
 
 router = APIRouter(
@@ -83,7 +86,7 @@ async def confirm_email(token: str):
     except Exception:
         return render_template(
             "confirm_info.html",
-            logo_path=f"http://{settings.APP_HOST}/image/logo.png",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
             main_text="404<br><br>"
             "Ссылка, по которой Вы перешли недействительна",
         )
@@ -91,7 +94,7 @@ async def confirm_email(token: str):
     if user[0].is_verified:
         return render_template(
             "confirm_info.html",
-            logo_path=f"http://{settings.APP_HOST}/image/logo.png",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
             main_text="Ваш Email адрес уже подтвержден",
         )
 
@@ -102,7 +105,42 @@ async def confirm_email(token: str):
 
     return render_template(
         "confirm_info.html",
-        logo_path=f"http://{settings.APP_HOST}/image/logo.png",
+        logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
         main_text=f"Email адрес {user[0].email} успешно подтвержден."
         "<br><br>Вы можете закрыть эту страницу.",
     )
+
+
+@router.get("/restore_password/{token}", response_class=HTMLResponse)
+async def restore_password(token: str):
+    try:
+        user = await get_current_user(token)
+    except Exception:
+        return render_template(
+            "confirm_info.html",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
+            main_text="404<br><br>"
+            "Ссылка, по которой Вы перешли недействительна",
+        )
+
+    password = generate_password(10)
+
+    result = await update_user(
+        user_id=user[0].id,
+        data=SUserUpdate(
+            email=None,
+            login=None,
+            password=password
+        )
+    )
+
+    if result["updated_password"]:
+
+        return render_template(
+            "confirm_info.html",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
+            main_text=f"Пароль для пользователя {
+                user[0].login} успешно сброшен"
+            f"<br>Новый пароль: {password}"
+            "<br>Скопируйте его прежде чем закрывать страницу!",
+        )

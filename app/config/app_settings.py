@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     APP_PREFIX: str
     APP_HOST: str
     APP_PORT: int
+    APP_BASE_URL: str
     APP_LOG_LEVEL: str
     APP_SECRET_KEY: str
     APP_ALGORITHM: str
