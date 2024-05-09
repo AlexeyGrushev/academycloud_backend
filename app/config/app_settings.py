@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     APP_SUPERUSER_ROLE_ID: int = Field(default=2)
     APP_MANAGER_ROLE_ID: int = Field(default=3)
 
+    # FLOWER SETTINGS
+    FLOWER_LOGIN: str
+    FLOWER_PASSWORD: str
+
     # SMTP Server
     SMTP_SERVER: str = Field(default="smtp.example.com")
     SMTP_PORT: int = Field(default=465)
