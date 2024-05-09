@@ -21,6 +21,7 @@ from app.exceptions.http_exceptions import (
 )
 from app.lessons.manage.schemas import SLesson, SLessonAnswer
 from app.lessons.manage.stats_dao import StatsDAO
+from app.users.user_dao import UserDAO
 
 
 def distribute_reward(reward, tasks_count):
@@ -196,3 +197,22 @@ async def main_lesson_handler(
     )
 
     return reward_data
+
+
+async def get_lessons_by_item_logic(id: int):
+    lessons = await LessonDAO.find_all(item_id=id)
+    data_to_return = {}
+    for lesson in lessons:
+        with open(
+            f"app/lessons/files/{lesson[0].id}.json",
+            "r"
+        ) as file:
+            lesson_data = json.load(file)
+        lesson_owner = await UserDAO.find_one_or_none(id=lesson[0].owner_id)
+        data_to_return[lesson[0].id] = {
+            "name": lesson[0].name,
+            "owner": lesson_owner[0].login,
+            "reward": lesson[0].reward,
+            "number_of_questions": len(lesson_data["body"]["questions"])
+        }
+    return data_to_return

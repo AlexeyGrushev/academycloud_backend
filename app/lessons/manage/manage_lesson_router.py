@@ -14,6 +14,7 @@ from app.lessons.manage.utils import (
     delete_lesson_logic,
     get_all_items,
     get_lesson_data,
+    get_lessons_by_item_logic,
     main_lesson_handler
 )
 
@@ -25,7 +26,7 @@ router = APIRouter(
 
 
 @router.get("/get_items")
-async def get_items(user: User = Depends(get_current_manager)):
+async def get_items(user: User = Depends(get_current_user)):
     items = await get_all_items()
     return items
 
@@ -65,6 +66,15 @@ async def delete_lesson(data: SLesson,
 async def get_lesson(lesson_id: int, user: User = Depends(get_current_user)):
     lesson = await get_lesson_data(id=lesson_id)
     return lesson
+
+
+@router.post("/get_lessons_by_item")
+async def get_lessons_by_item(
+    data: SLesson,
+    user: User = Depends(get_current_user)
+):
+    result = await get_lessons_by_item_logic(data.id)
+    return result
 
 
 @router.post("/accept_lesson_answer")

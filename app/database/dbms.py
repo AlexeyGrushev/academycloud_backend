@@ -14,9 +14,9 @@ class DataBaseHelper:
     model = None
 
     @classmethod
-    async def find_all(cls):
+    async def find_all(cls, **kwargs):
         async with async_session() as session:
-            query = select(cls.model)
+            query = select(cls.model).filter_by(**kwargs)
             result = await session.execute(query)
             return result.fetchall()
 
