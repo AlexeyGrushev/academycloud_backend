@@ -97,3 +97,8 @@ http_400_bad_answer = HTTPException(
 )
 
 # -----------------------------
+
+http_404_score_not_found = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="No data was found for this user for the selected time period"
+)

@@ -10,6 +10,7 @@ from app.lessons.manage.stats_dao import StatsDAO
 from app.users.profile_dao import ProfileDAO
 from app.users.schemas import (
     SProfile,
+    SScoreBoardDate,
     SUserActivationManager,
     SUserLoginData,
     SUserProfile,
@@ -20,7 +21,8 @@ from app.tasks.tasks import send_user_email
 from app.exceptions.http_exceptions import (
     http_exc_400_email_confirm,
     http_exc_400_bad_data,
-    http_exc_403_access_denied
+    http_exc_403_access_denied,
+    http_404_score_not_found
 )
 from app.users.user_dao import UserDAO
 from app.users.utils import update_user
@@ -47,6 +49,7 @@ async def get_user_info(user: User = Depends(get_current_user)):
             first_name=None,
             last_name=None,
             profile_pic=None,
+            task_completed=0,
             points=0,
             status=None
         )
@@ -62,6 +65,10 @@ async def get_user_info(user: User = Depends(get_current_user)):
             StatsDAO.model.earned_points,
             user_id=user[0].id)
 
+        task_completed = await StatsDAO.find_all(
+            user_id=user[0].id
+        )
+
         if points is None:
             points = 0
 
@@ -75,9 +82,38 @@ async def get_user_info(user: User = Depends(get_current_user)):
             first_name=profile[0].first_name,
             last_name=profile[0].last_name,
             profile_pic=profile_pic,
+            task_completed=len(task_completed),
             points=points,
             status=profile[0].status
         )
+
+
+@router.post("/get_user_rating")
+async def get_user_rating(
+    data: SScoreBoardDate,
+    user: User = Depends(get_current_user)
+):
+    if data.start_date is None and data.end_date is None:
+        result = await StatsDAO.get_user_scoreboard_pos(
+            user_id=user[0].id
+        )
+    else:
+        result = await StatsDAO.get_user_scoreboard_pos(
+            user_id=user[0].id,
+            start_date=data.start_date,
+            end_date=data.end_date
+        )
+
+    if not result:
+        raise http_404_score_not_found
+
+    return {
+        "user_id": result.user_id,
+        "points": result.points,
+        "position": result.rank,
+        "start_date": data.start_date,
+        "end_date": data.end_date
+    }
 
 
 @router.put("/update_user")

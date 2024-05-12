@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from pydantic import BaseModel, EmailStr, Field
 
 
@@ -19,6 +19,7 @@ class SUserProfile(BaseModel):
     first_name: str | None
     last_name: str | None
     profile_pic: str | None
+    task_completed: int | None
     points: int | None
     status: str | None
 
@@ -36,3 +37,8 @@ class SUserUpdate(BaseModel):
     email: EmailStr | None
     login: str | None
     password: str | None = Field(min_length=8)
+
+
+class SScoreBoardDate(BaseModel):
+    start_date: date | None
+    end_date: date | None
