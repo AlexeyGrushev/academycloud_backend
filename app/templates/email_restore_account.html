@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Academy Cloud</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            text-align: center;
+        }
+        .button {
+            background-color: #0078e1;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #004f95;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        .button:active {
+            background-color: #349bf5;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        #ps {
+            color: grey;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Деактивация аккаунта</h2>
+        <p>
+            Здравствуйте, {{ user_name }}! <br>
+            Вы получили это письмо, так как деактивировали свою учётную запись.<br>
+            В течение 30 дней Вы можете восстановить свою учёнтую запись, нажав на кнопку ниже.
+        </p>
+        <a href="{{ url_for_confirm }}" class="button">Активировать аккаунт</a>
+        <p id="ps">Если это письмо было отправлено Вам по ошибке, пожалуйста, проигнорируйте его.
+            <br>
+            Academy Cloud - система онлайн обучения учебным дисциплинам
+            <br>
+            Ссылка действительна 30 дней
+        </p>
+    </div>
+</body>
+</html>

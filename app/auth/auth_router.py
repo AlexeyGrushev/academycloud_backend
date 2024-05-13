@@ -144,3 +144,33 @@ async def restore_password(token: str):
             f"<br>Новый пароль: {password}"
             "<br>Скопируйте его прежде чем закрывать страницу!",
         )
+
+
+@router.get("/activate_account/{token}", response_class=HTMLResponse)
+async def activate_account(token: str):
+    try:
+        user = await get_current_user(token)
+    except Exception:
+        return render_template(
+            "confirm_info.html",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
+            main_text="404<br><br>"
+            "Ссылка, по которой Вы перешли недействительна",
+        )
+
+    if user[0].is_active:
+        return render_template(
+            "confirm_info.html",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
+            main_text="Ваша учётная запись активна"
+        )
+    else:
+        await UserDAO.update_user(
+            user_id=user[0].id,
+            is_active=True
+        )
+        return render_template(
+            "confirm_info.html",
+            logo_path=f"{settings.APP_BASE_URL}/image/logo.png",
+            main_text=f"Ваша учётная запись {user[0].login} активирована"
+        )

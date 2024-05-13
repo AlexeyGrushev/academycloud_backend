@@ -26,6 +26,7 @@ async def get_current_user(token: str = Depends(get_token)):
             settings.APP_SECRET_KEY,
             settings.APP_ALGORITHM
         )
+        print(payload)
     except JWTError:
         raise http_exc_401_unauthorized
 
@@ -42,6 +43,12 @@ async def get_current_user(token: str = Depends(get_token)):
         raise http_exc_401_unauthorized
 
     if user[0].is_active is False:
+        try:
+            restore: bool = payload.get("restore")
+            if restore:
+                return user
+        except Exception:
+            pass
         raise http_exc_401_banned_user
 
     return user

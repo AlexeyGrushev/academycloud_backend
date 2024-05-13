@@ -3,7 +3,7 @@ from fastapi.routing import APIRouter
 from fastapi_cache.decorator import cache
 
 
-from app.base.email_utils import create_url_for_confirm, create_url_for_restore
+from app.base.email_utils import create_url_for_account_activation, create_url_for_confirm, create_url_for_restore
 from app.auth.dependencies import get_current_manager, get_current_user
 from app.files.file_dao import FileDAO
 from app.lessons.manage.stats_dao import StatsDAO
@@ -220,4 +220,29 @@ async def manager_set_user_active(
         "status": "success",
         "id": result,
         "is_active": data.is_active
+    }
+
+
+@router.delete("/deactivate_user")
+async def deactivate_account(
+        user: User = Depends(get_current_user)):
+
+    result = await UserDAO.update_user(
+        user_id=user[0].id,
+        is_active=False)
+
+    if user[0].is_verified:
+        profile = await ProfileDAO.find_one_or_none(user_data=user[0].id)
+        send_user_email.delay(
+            user_email=user[0].email,
+            template_name="email_restore_account.html",
+            user_name=profile[0].first_name,
+            url_for_confirm=create_url_for_account_activation(
+                str(user[0].id)
+            )
+        )
+    return {
+        "status": "success",
+        "user_id": user[0].id,
+        "info": "User is deactivated"
     }

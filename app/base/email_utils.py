@@ -22,6 +22,14 @@ def create_url_for_restore(user_id: str):
     return url
 
 
+def create_url_for_account_activation(user_id: str):
+    token = create_access_token(
+        {"sub": user_id, "restore": True}, settings.APP_ACCESS_EXPIRE_DAYS)
+    url = f"{settings.APP_BASE_URL}{
+        settings.APP_PREFIX}/auth/activate_account/{token}"
+    return url
+
+
 def preparing_for_email(
     subject: str,
     by: str,
