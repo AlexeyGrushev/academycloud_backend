@@ -102,3 +102,8 @@ http_404_score_not_found = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,
     detail="No data was found for this user for the selected time period"
 )
+
+http_exc_400_bad_leaderboard_limit = HTTPException(
+    status_code=status.HTTP_400_BAD_REQUEST,
+    detail="Leaderboard limit can't be negative"
+)

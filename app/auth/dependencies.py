@@ -26,7 +26,6 @@ async def get_current_user(token: str = Depends(get_token)):
             settings.APP_SECRET_KEY,
             settings.APP_ALGORITHM
         )
-        print(payload)
     except JWTError:
         raise http_exc_401_unauthorized
 

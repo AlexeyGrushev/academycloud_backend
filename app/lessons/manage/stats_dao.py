@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta, timezone
 from sqlalchemy import select, func, text
 
 from app.database.dbms import DataBaseHelper
-from app.database.models import Stats, User
+from app.database.models import Stats, User, Profile
 from app.config.db_settings import async_session
 
 
@@ -25,15 +25,20 @@ class StatsDAO(DataBaseHelper):
             limit: int = None):
         async with async_session() as session:
             query = select(
-                User.id, User.login, User.email, func.sum(
+                User.login,
+                Profile.first_name, Profile.last_name,
+                func.sum(
                     cls.model.earned_points).label("points")
+            ).join(
+                Profile, User.id == Profile.user_data
             ).join(
                 cls.model, User.id == cls.model.user_id
             ).where(
                 cls.model.date.between(start_date, end_date),
                 User.is_active == True  # noqa
             ).group_by(
-                User.id
+                User.id, User.login,
+                Profile.first_name, Profile.last_name, User.email
             ).order_by(
                 text("points DESC"),
             ).limit(limit)
@@ -59,10 +64,10 @@ class StatsDAO(DataBaseHelper):
                 cls.model.date.between(start_date, end_date)
             ).group_by(cls.model.user_id)
             query = select(
-                    subquery.c.user_id.label("user_id"),
-                    subquery.c.points.label("points"),
-                    subquery.c.rank.label("rank")
-                ).where(
+                subquery.c.user_id.label("user_id"),
+                subquery.c.points.label("points"),
+                subquery.c.rank.label("rank")
+            ).where(
                 subquery.c.user_id == user_id
             )
 

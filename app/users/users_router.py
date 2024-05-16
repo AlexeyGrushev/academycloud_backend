@@ -3,7 +3,11 @@ from fastapi.routing import APIRouter
 from fastapi_cache.decorator import cache
 
 
-from app.base.email_utils import create_url_for_account_activation, create_url_for_confirm, create_url_for_restore
+from app.base.email_utils import (
+    create_url_for_account_activation,
+    create_url_for_confirm,
+    create_url_for_restore
+)
 from app.auth.dependencies import get_current_manager, get_current_user
 from app.files.file_dao import FileDAO
 from app.lessons.manage.stats_dao import StatsDAO
@@ -22,7 +26,8 @@ from app.exceptions.http_exceptions import (
     http_exc_400_email_confirm,
     http_exc_400_bad_data,
     http_exc_403_access_denied,
-    http_404_score_not_found
+    http_404_score_not_found,
+    http_exc_400_bad_leaderboard_limit
 )
 from app.users.user_dao import UserDAO
 from app.users.utils import update_user
@@ -113,6 +118,34 @@ async def get_user_rating(
         "position": result.rank,
         "start_date": data.start_date,
         "end_date": data.end_date
+    }
+
+
+@router.post("/get_users_leaderboard")
+async def get_users_leaderboard(
+    limit: int,
+    data: SScoreBoardDate,
+    user: User = Depends(get_current_user)
+):
+    if limit < 1:
+        raise http_exc_400_bad_leaderboard_limit
+
+    if data.start_date is None and data.end_date is None:
+        result = await StatsDAO.get_leaderboard(
+            limit=limit
+        )
+    else:
+        result = await StatsDAO.get_leaderboard(
+            start_date=data.start_date,
+            end_date=data.end_date,
+            limit=limit
+        )
+
+    return {
+        "status": "success",
+        "data_type": "list",
+        "limit": limit,
+        "data": [list(item) for item in result]
     }
 
 
@@ -227,7 +260,7 @@ async def manager_set_user_active(
 async def deactivate_account(
         user: User = Depends(get_current_user)):
 
-    result = await UserDAO.update_user(
+    await UserDAO.update_user(
         user_id=user[0].id,
         is_active=False)
 

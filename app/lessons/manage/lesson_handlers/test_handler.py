@@ -62,6 +62,7 @@ async def test_lesson_handler(
                 right_answers.append(0)
 
         return {
+            "lesson_id": lesson[0].id,
             "correct_answers": right_answers,
             "reward": reward
         }

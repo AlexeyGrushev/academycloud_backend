@@ -174,6 +174,13 @@ async def main_lesson_handler(
     data: SLessonAnswer,
     user: User
 ):
+    """
+    return format {
+            "lesson_id": int,
+            "correct_answers": list,
+            "reward": int
+        }
+    """
     lesson = await LessonDAO.find_one_or_none(id=data.id)
     if not lesson:
         raise http_400_bad_lesson

@@ -10,9 +10,9 @@ from contextlib import asynccontextmanager
 from redis import asyncio as aioredis
 
 from app.config.app_settings import settings
-from app.lessons.math.equations.quadratic_equations import (
-    equation_router
-)
+# from app.lessons.math.equations.quadratic_equations import (
+#     equation_router
+# )
 from app.auth import auth_router
 from app.users import users_router
 from app.files import files_router
@@ -56,7 +56,7 @@ app.include_router(auth_router.router, prefix=settings.APP_PREFIX)
 app.include_router(users_router.router, prefix=settings.APP_PREFIX)
 app.include_router(files_router.router, prefix=settings.APP_PREFIX)
 app.include_router(manage_lesson_router.router, prefix=settings.APP_PREFIX)
-app.include_router(equation_router.router, prefix=settings.APP_PREFIX)
+# app.include_router(equation_router.router, prefix=settings.APP_PREFIX)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,7 @@
 from fastapi import Depends, File, UploadFile
 
 from fastapi.routing import APIRouter
+from fastapi_cache.decorator import cache
 
 from app.auth.dependencies import get_current_manager, get_current_user
 from app.database.models.user import User
@@ -26,6 +27,7 @@ router = APIRouter(
 
 
 @router.get("/get_items")
+@cache(expire=60*60)
 async def get_items(user: User = Depends(get_current_user)):
     items = await get_all_items()
     return items
@@ -63,6 +65,7 @@ async def delete_lesson(data: SLesson,
 
 
 @router.get("/get_lesson")
+@cache(expire=60*5)
 async def get_lesson(lesson_id: int, user: User = Depends(get_current_user)):
     lesson = await get_lesson_data(id=lesson_id)
     return lesson

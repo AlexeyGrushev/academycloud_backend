@@ -26,9 +26,9 @@ print(f"Конец недели: {end}")
 
 
 async def test_stats():
-    # res = await StatsDAO.get_leaderboard(date(2024, 5, 11), date(2024, 5, 12))
+    res = await StatsDAO.get_leaderboard(date(2024, 1, 1), date(2024, 5, 14))
     # res = await StatsDAO.get_user_scoreboard_pos(13)
-    res = await StatsDAO.find_all(user_id=14)
+    # res = await StatsDAO.find_all(user_id=14)
 
     print(res)
 
