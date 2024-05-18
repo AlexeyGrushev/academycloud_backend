@@ -15,7 +15,8 @@ class Profile(Base):
     )
     user_data: Mapped[int] = mapped_column(
         BigInteger,
-        ForeignKey("user.id")
+        ForeignKey("user.id"),
+        unique=True
     )
     first_name: Mapped[str] = mapped_column(
         String(50),
