@@ -43,6 +43,7 @@ async def test_lesson_handler(
 
     if list(data.answer) == list(answers):
         return {
+            "lesson_id": lesson[0].id,
             "correct_answers": [1] * len(answers),
             "reward": int(lesson_data["reward"])
         }
