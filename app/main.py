@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="AcademyCloud Управление",
-    version="Beta 1.0",
+    version="Beta 1.1",
     lifespan=lifespan,
 )
 
