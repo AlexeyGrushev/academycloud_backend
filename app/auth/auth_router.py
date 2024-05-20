@@ -9,6 +9,7 @@ from app.auth.utils import (
     create_access_token,
     create_hash_password,
 )
+from app.base.email_utils import create_url_for_confirm
 from app.base.generate_random_password import generate_password
 from app.base.templates import render_template
 from app.config.app_settings import settings
@@ -19,6 +20,7 @@ from app.exceptions.http_exceptions import (
     http_exc_401_banned_user
 )
 from app.auth.schemas import SLoginUser, SRegisterUser
+from app.tasks.tasks import send_user_email
 from app.users.schemas import SUserUpdate
 from app.users.user_dao import UserDAO
 from app.users.utils import update_user
@@ -47,6 +49,15 @@ async def create_user(data: SRegisterUser):
         email=data.email,
         login=data.login,
         hashed_password=hashed_password
+    )
+
+    send_user_email.delay(
+        user_email=data.email,
+        template_name="email_confirm.html",
+        user_name=data.login,
+        url_for_confirm=create_url_for_confirm(
+            str(user)
+        )
     )
 
     return JSONResponse(
