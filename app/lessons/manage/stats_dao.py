@@ -21,7 +21,7 @@ class StatsDAO(DataBaseHelper):
             cls,
             start_date: date = date(2024, 1, 1),
             end_date: date = datetime.now(
-                timezone.utc).date() + timedelta(days=1),
+                timezone.utc).date() + timedelta(days=2),
             limit: int = None):
         async with async_session() as session:
             query = select(
